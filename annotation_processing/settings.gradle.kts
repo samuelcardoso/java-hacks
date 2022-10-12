@@ -11,7 +11,7 @@ pluginManagement {
     }
 }
 
-rootProject.name = "wip_annotation_processing"
+rootProject.name = "annotation_processing"
 
 include(":workload")
 include(":test-processor")
