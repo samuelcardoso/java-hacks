@@ -3,13 +3,13 @@ import kotlin.reflect.full.findAnnotation
 
 @Target(AnnotationTarget.PROPERTY)
 @Retention(AnnotationRetention.RUNTIME)
-annotation class Foo(val prop1: String = "")
+annotation class Log(val level: String = "")
 
-data class Bar(@Foo("baz") val id: Int)
+data class Movie(@Log("DEBUG") val id: Int)
 
 fun main(args: Array<String>) {
-    val obj = Bar(123)
-    val idProp = obj::class.declaredMemberProperties.first { it.name == "id" }
-    val barAnnotation = idProp.findAnnotation<Foo>()
-    println("Value of my annotation: " + barAnnotation?.prop1)
+    val movie = Movie(123)
+    val idMovie = movie::class.declaredMemberProperties.first { it.name == "id" }
+    val logAnnotation = idMovie.findAnnotation<Log>()
+    println("Value of my log: " + logAnnotation?.level)
 }

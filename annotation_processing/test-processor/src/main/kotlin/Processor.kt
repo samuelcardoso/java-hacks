@@ -1,13 +1,10 @@
 import com.google.devtools.ksp.processing.*
 import com.google.devtools.ksp.symbol.*
-import com.google.devtools.ksp.validate
-import java.io.File
 import java.io.OutputStream
 
-
-class TestProcessor(
-    val codeGenerator: CodeGenerator,
-    val options: Map<String, String>
+class Processor(
+    private val codeGenerator: CodeGenerator,
+    private val options: Map<String, String>
 ) : SymbolProcessor {
     lateinit var file: OutputStream
     var invoked = false
@@ -25,11 +22,6 @@ class TestProcessor(
 
         val javaFile = codeGenerator.createNewFile(Dependencies(false), "", "Generated", "java")
         javaFile.appendText("class Generated {}")
-
-        val fileKt = codeGenerator.createNewFile(Dependencies(false), "", "HELLO", "java")
-        fileKt.appendText("public class HELLO{\n")
-        fileKt.appendText("public int foo() { return 1234; }\n")
-        fileKt.appendText("}")
 
         val files = resolver.getAllFiles()
         emit("TestProcessor: process()", "")
@@ -254,6 +246,6 @@ class TestProcessorProvider : SymbolProcessorProvider {
     override fun create(
         env: SymbolProcessorEnvironment
     ): SymbolProcessor {
-        return TestProcessor(env.codeGenerator, env.options)
+        return Processor(env.codeGenerator, env.options)
     }
 }

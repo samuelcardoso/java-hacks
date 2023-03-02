@@ -1,8 +1,9 @@
 import com.google.devtools.ksp.processing.*
 import com.google.devtools.ksp.symbol.*
 import com.google.devtools.ksp.validate
-import java.io.File
 import java.io.OutputStream
+
+annotation class Builder
 
 fun OutputStream.appendText(str: String) {
     this.write(str.toByteArray())
@@ -12,7 +13,7 @@ class BuilderProcessor(
     val logger: KSPLogger
 ) : SymbolProcessor {
     override fun process(resolver: Resolver): List<KSAnnotated> {
-        val symbols = resolver.getSymbolsWithAnnotation("com.example.annotation.Builder")
+        val symbols = resolver.getSymbolsWithAnnotation("Builder")
         val ret = symbols.filter { !it.validate() }.toList()
         symbols
             .filter { it is KSClassDeclaration && it.validate() }
@@ -31,7 +32,6 @@ class BuilderProcessor(
             val className = "${parent.simpleName.asString()}Builder"
             val file = codeGenerator.createNewFile(Dependencies(true, function.containingFile!!), packageName , className)
             file.appendText("package $packageName\n\n")
-            file.appendText("import HELLO\n\n")
             file.appendText("class $className{\n")
             function.parameters.forEach {
                 val name = it.name!!.asString()

@@ -1,4 +1,3 @@
-import com.example.annotation.Builder
 import com.squareup.javapoet.*
 import javax.annotation.processing.AbstractProcessor
 import javax.annotation.processing.RoundEnvironment
@@ -14,14 +13,13 @@ class JavaBuilderProcessor : AbstractProcessor() {
         return SourceVersion.latestSupported()
     }
     override fun getSupportedAnnotationTypes(): MutableSet<String> {
-        return mutableSetOf("com.example.annotation.Builder")
+        return mutableSetOf("Builder")
     }
 
     private fun processType(typeElement: TypeElement) {
         val typeSpecBuilder = TypeSpec.classBuilder("${typeElement.simpleName}Builder")
         val constructor = typeElement.enclosedElements.filterIsInstance<ExecutableElement>()
-                .filter { it.simpleName.toString() == "<init>" }
-                .first()
+            .first { it.simpleName.toString() == "<init>" }
 
         constructor.parameters.forEach {
             typeSpecBuilder.addField(ClassName.get(it.asType()), it.simpleName.toString(), Modifier.PRIVATE)
@@ -36,7 +34,7 @@ class JavaBuilderProcessor : AbstractProcessor() {
                             .build()
             )
         }
-        val statements = constructor.parameters.map { it.simpleName.toString() }.joinToString(", ")
+        val statements = constructor.parameters.joinToString(", ") { it.simpleName.toString() }
         typeSpecBuilder.addMethod(
                 MethodSpec.methodBuilder("build")
                         .addModifiers(Modifier.PUBLIC)
