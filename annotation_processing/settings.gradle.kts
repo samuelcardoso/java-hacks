@@ -13,5 +13,5 @@ pluginManagement {
 
 rootProject.name = "annotation_processing"
 
-include(":sample")
-include(":annotation-processor")
+include(":framework")
+include(":sampleproject")
